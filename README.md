@@ -12,6 +12,36 @@ This is a simple tool I built to help manage Genesys Cloud Data Tables. It makes
 *   **Environments**: Switch between different Genesys organizations (like Dev, Test, Prod) without restarting.
 *   **Audit Logs**: Keeps a history of who changed what.
 
+## Business Process Overview
+
+This workflow demonstrates how the application bridges the gap between Business Users and Genesys Cloud, ensuring security and compliance.
+
+```mermaid
+graph TD
+    %% Actors
+    Admin[👤 Administrator]
+    BizUser[👤 Business User]
+
+    %% The Application Boundary
+    subgraph Solution [🛡️ Data Manager Solution]
+        direction TB
+        Rules[📋 Security Rules]
+        Dashboard[💻 Simplified Dashboard]
+        Compliance[✅ Audit & Compliance Log]
+    end
+
+    %% External System
+    Genesys[☁️ Genesys Cloud]
+
+    %% Relationships
+    Admin -->|1. Configures Access| Rules
+    Rules -->|Enforces| Dashboard
+    
+    BizUser -->|2. Views & Edits| Dashboard
+    Dashboard -->|3. Secure Update| Genesys
+    Dashboard -.->|4. Auto-Logging| Compliance
+```
+
 ## How to run it
 
 ### The easy way (Windows)
