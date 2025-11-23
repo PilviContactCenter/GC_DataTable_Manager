@@ -124,7 +124,7 @@ graph TD
             Config["📄 .env / Config"]
         end
         
-        User <-->|HTTP (Localhost)| WebApp
+        User <-->|"HTTP (Localhost)"| WebApp
         Logic <-->|SQLAlchemy| DB
         WebApp -.->|Reads| Config
     end
@@ -134,7 +134,7 @@ graph TD
         GC_API["📡 Genesys Cloud API"]
     end
     
-    Logic <-->|HTTPS (Secure)| GC_API
+    Logic <-->|"HTTPS (Secure)"| GC_API
     
     note_libs["📚 Key Libraries:<br/>- Flask<br/>- Pandas<br/>- SQLAlchemy<br/>- PureCloudPlatformClientV2"]
     style note_libs fill:#fff9c4,stroke:#fbc02d,stroke-dasharray: 5 5
