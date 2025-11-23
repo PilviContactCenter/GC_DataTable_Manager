@@ -44,3 +44,54 @@ After you log in, the app will ask you to set up your Genesys Cloud connection. 
 *   If you use this in a real production environment, make sure to change the secret key in the code.
 
 Enjoy!
+
+## Database Schema
+
+```mermaid
+erDiagram
+    User {
+        Integer id PK
+        String email
+        String password
+        String role
+    }
+
+    AppConfig {
+        Integer id PK
+        String name
+        String client_id
+        String client_secret
+        String region
+        Boolean is_active
+    }
+
+    TablePermission {
+        Integer id PK
+        Integer user_id FK
+        String table_id
+        Boolean can_update_rows
+        Boolean can_read_rows
+    }
+
+    ColumnPermission {
+        Integer id PK
+        Integer table_permission_id FK
+        String column_name
+        String access_level
+    }
+
+    AuditLog {
+        Integer id PK
+        Integer user_id FK
+        String action
+        String target
+        Text details
+        Text previous_state
+        Text new_state
+        DateTime timestamp
+    }
+
+    User ||--o{ TablePermission : "has"
+    User ||--o{ AuditLog : "generates"
+    TablePermission ||--o{ ColumnPermission : "contains"
+```
