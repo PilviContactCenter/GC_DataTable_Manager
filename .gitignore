@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.env
+genesys_manager.db
+instance/
+*.csv
+*.log

@@ -1,0 +1,2 @@
+import PureCloudPlatformClientV2
+help(PureCloudPlatformClientV2.ArchitectApi.get_flows_datatable_rows)

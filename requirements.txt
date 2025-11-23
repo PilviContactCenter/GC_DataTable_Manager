@@ -1,0 +1,7 @@
+PureCloudPlatformClientV2
+python-dotenv
+pandas
+flask
+Flask-SQLAlchemy
+Flask-WTF
+email_validator
