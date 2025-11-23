@@ -103,12 +103,10 @@ This diagram illustrates the local nature of the application and the libraries u
 ```mermaid
 graph TD
     subgraph Local_Machine ["💻 Local Machine (Secure Boundary)"]
-        style Local_Machine fill:#e1f5fe,stroke:#01579b,stroke-width:2px
         
         User[("👤 User (Browser)")]
         
         subgraph Application ["🚀 Flask Application"]
-            style Application fill:#fff3e0,stroke:#ff6f00,stroke-width:2px
             
             WebApp["app.py (Controller)"]
             Auth["🔐 Security Layer<br/>(CSRF, Password Hash)"]
@@ -119,7 +117,6 @@ graph TD
         end
         
         subgraph Storage ["💾 Local Storage"]
-            style Storage fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
             DB[("🗄️ SQLite Database<br/>(genesys_manager.db)")]
             Config["📄 .env / Config"]
         end
@@ -130,14 +127,13 @@ graph TD
     end
     
     subgraph External_Cloud ["☁️ Genesys Cloud"]
-        style External_Cloud fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
         GC_API["📡 Genesys Cloud API"]
     end
     
     Logic <-->|"HTTPS (Secure)"| GC_API
     
     note_libs["📚 Key Libraries:<br/>- Flask<br/>- Pandas<br/>- SQLAlchemy<br/>- PureCloudPlatformClientV2"]
-    style note_libs fill:#fff9c4,stroke:#fbc02d,stroke-dasharray: 5 5
+    style note_libs stroke-dasharray: 5 5
     
     Application -.- note_libs
 ```
