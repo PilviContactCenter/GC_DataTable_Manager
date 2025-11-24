@@ -12,7 +12,7 @@ list_tables.GENESYS_CLOUD_REGION = 'eu_central_1' # Hardcoded in app.py, so usin
 
 list_tables.authenticate()
 
-table_id = '18fa8c51-e21c-4357-8ce1-b9432fcb3f96'
+table_id = input("Enter Table ID: ")
 
 print(f"--- Debugging Table {table_id} ---")
 

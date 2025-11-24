@@ -17,7 +17,7 @@ def authenticate():
 
 def inspect_schema():
     api_instance = PureCloudPlatformClientV2.ArchitectApi()
-    table_id = '1629d38a-ed2d-4eeb-bc71-a5fb16c5b92c'
+    table_id = input("Enter Table ID: ")
     try:
         result = api_instance.get_flows_datatable(table_id, expand=['schema'])
         schema = result.schema

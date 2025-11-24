@@ -34,4 +34,5 @@ def get_table_schema(table_id):
 if __name__ == "__main__":
     authenticate()
     # Using the ID from previous context: Translation_Language
-    get_table_schema('1629d38a-ed2d-4eeb-bc71-a5fb16c5b92c')
+    table_id = input("Enter Table ID: ")
+    get_table_schema(table_id)

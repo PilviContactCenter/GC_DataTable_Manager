@@ -12,7 +12,7 @@ list_tables.GENESYS_CLOUD_REGION = 'eu_central_1'
 
 list_tables.authenticate()
 
-table_id = '1423075c-55d5-4bfb-bf5f-6a21e2f79b44'
+table_id = input("Enter Table ID: ")
 
 print(f"--- Debugging Schema for Table {table_id} ---")
 

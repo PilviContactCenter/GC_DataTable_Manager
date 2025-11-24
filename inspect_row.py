@@ -19,7 +19,7 @@ def authenticate():
 def inspect_table_row():
     api_instance = PureCloudPlatformClientV2.ArchitectApi()
     # Using the ID from the previous output: Translation_Language
-    table_id = '1629d38a-ed2d-4eeb-bc71-a5fb16c5b92c' 
+    table_id = input("Enter Table ID: ")
     
     print(f"Fetching rows for table {table_id}...")
     try:
