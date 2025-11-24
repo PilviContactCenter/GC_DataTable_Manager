@@ -11,7 +11,7 @@ This is a simple tool I built to help manage Genesys Cloud Data Tables. It makes
 *   **Backup**: Save your tables to a JSON file and restore them later if needed.
 *   **Environments**: Switch between different Genesys organizations (like Dev, Test, Prod) without restarting.
 *   **Audit Logs**: Keeps a history of who changed what.
-*   **Rollback Funcionality**: funcionlity to Undo the changes.
+*   **Rollback Functionality**: Functionality to Undo the changes.
 
 
 ## Business Process Overview
@@ -46,9 +46,25 @@ graph TD
 
 ## How to run it
 
-### The easy way (Windows)
+### Windows
 Just double-click the **`run.bat`** file.
-It will set everything up for you (install libraries, etc.) and open the app in your browser.
+*   It will create a central environment in `C:\PilviContactCenter`.
+*   It will install all necessary libraries.
+*   It will open the app in your default browser automatically.
+
+### macOS / Linux
+1.  Open your terminal.
+2.  Make the script executable (first time only):
+    ```bash
+    chmod +x run.sh
+    ```
+3.  Run the script:
+    ```bash
+    ./run.sh
+    ```
+*   It will create a central environment in `~/PilviContactCenter`.
+*   It will install all necessary libraries.
+*   It will open the app in your default browser automatically.
 
 ### The manual way
 If you prefer the command line:
@@ -62,13 +78,20 @@ If you prefer the command line:
     ```
 3.  Open your browser to `http://127.0.0.1:5000`.
 
-## First Login
+## First Run & Setup
 
-When you run it for the first time, use these credentials:
-*   **Email**: `admin@admin.com`
-*   **Password**: `panama123`
+Since version 2.0, the application includes a **Setup Wizard** for the initial configuration. You no longer need to use default credentials.
 
-After you log in, the app will ask you to set up your Genesys Cloud connection. You'll need your **Client ID** and **Client Secret** ready. Just add a new environment (e.g., "Production") and click **Activate**.
+1.  **Launch the App**: Run `run.bat` (Windows) or `./run.sh` (Mac/Linux).
+2.  **Create Admin User**: On the first run, you will be prompted to create your **Administrator Account** (Email & Password).
+3.  **Connect Genesys Cloud**: You can optionally enter your Genesys Cloud Client ID, Client Secret, and Region during setup, or configure it later in the Admin Panel.
+
+Once setup is complete, simply log in with the credentials you just created.
+
+## Utility Scripts
+
+The project includes several utility scripts for debugging and inspection (e.g., `inspect_row.py`, `check_schema.py`).
+These scripts have been updated to be interactive. When you run them, they will prompt you to enter the **Table ID** you wish to inspect, making them safe and easy to use across different organizations.
 
 ## Notes
 

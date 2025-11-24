@@ -13,7 +13,31 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'dev_secret_key_12345')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///genesys_manager.db'
+
+# Determine Database Path based on OS
+if os.name == 'nt':
+    # Windows
+    DATA_DIR = r'C:\PilviContactCenter'
+else:
+    # macOS / Linux
+    DATA_DIR = os.path.expanduser('~/PilviContactCenter')
+
+# Ensure directory exists
+if not os.path.exists(DATA_DIR):
+    try:
+        os.makedirs(DATA_DIR)
+    except OSError as e:
+        print(f"Could not create data directory {DATA_DIR}: {e}")
+        # Fallback to current directory
+        DATA_DIR = os.path.dirname(os.path.abspath(__file__))
+
+DB_PATH = os.path.join(DATA_DIR, 'genesys_manager.db')
+print(f"Using Database at: {DB_PATH}")
+
+# SQLAlchemy URI
+# On Unix, absolute path starts with /, so sqlite:////path
+# On Windows, absolute path starts with Drive:, so sqlite:///Drive:/path
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_PATH}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 print("Initializing Database...")
