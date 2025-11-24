@@ -6,6 +6,10 @@ echo ========================================================
 
 cd /d "%~dp0"
 
+REM Define central installation path
+set "INSTALL_DIR=C:\PilviContactCenter"
+set "VENV_DIR=%INSTALL_DIR%\venv"
+
 REM 1. Check for Python
 python --version >nul 2>&1
 if %errorlevel% neq 0 (
@@ -14,14 +18,20 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-REM 2. Create Virtual Environment if missing
-if not exist "venv" (
-    echo [INFO] First time setup: Creating virtual environment...
-    python -m venv venv
+REM 2. Create Install Directory if missing
+if not exist "%INSTALL_DIR%" (
+    echo [INFO] Creating directory %INSTALL_DIR%...
+    mkdir "%INSTALL_DIR%"
 )
 
-REM 3. Activate Virtual Environment
-call venv\Scripts\activate
+REM 3. Create Virtual Environment if missing
+if not exist "%VENV_DIR%" (
+    echo [INFO] First time setup: Creating virtual environment in %VENV_DIR%...
+    python -m venv "%VENV_DIR%"
+)
+
+REM 4. Activate Virtual Environment
+call "%VENV_DIR%\Scripts\activate"
 
 REM 4. Install Dependencies
 echo [INFO] Checking and installing dependencies...
@@ -44,6 +54,6 @@ timeout /t 2 /nobreak >nul
 start http://127.0.0.1:5000
 
 REM Run Flask App
-python app.py
+python -u app.py
 
 pause

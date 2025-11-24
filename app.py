@@ -16,16 +16,20 @@ app.secret_key = os.getenv('FLASK_SECRET_KEY', 'dev_secret_key_12345')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///genesys_manager.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+print("Initializing Database...")
 csrf = CSRFProtect(app)
 
 db.init_app(app)
 
 # Initialize DB and Config
 with app.app_context():
+    print("Creating database tables...")
     db.create_all()
+    print("Database tables created.")
     
     # Migration: Check if AppConfig has 'name' and 'is_active' columns
     try:
+        print("Checking migrations...")
         with db.engine.connect() as conn:
             # SQLite specific check
             result = conn.execute(text("PRAGMA table_info(app_config)")).fetchall()
@@ -41,15 +45,18 @@ with app.app_context():
                 # Set the first one to active if none are active
                 conn.execute(text("UPDATE app_config SET is_active = 1 WHERE id = (SELECT id FROM app_config LIMIT 1)"))
                 conn.commit()
+        print("Migrations checked.")
     except Exception as e:
         print(f"Migration check failed: {e}")
 
     # Check if config exists, if not try to load from .env
+    print("Checking configuration...")
     config = AppConfig.query.filter_by(is_active=True).first()
     if not config:
         # Try to find ANY config
         config = AppConfig.query.first()
         if not config:
+            print("No config found in DB. Checking .env...")
             load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
             client_id = os.getenv('CLIENT_ID')
             client_secret = os.getenv('CLIENT_SECRET')
@@ -58,29 +65,28 @@ with app.app_context():
                 db.session.add(config)
                 db.session.commit()
                 print("Initialized AppConfig from .env")
+            else:
+                print("No credentials in .env")
         else:
             # If config exists but none active, set first to active
             config.is_active = True
             db.session.commit()
+            print("Activated existing config.")
     
     if config:
+        print("Setting credentials...")
         list_tables.set_credentials(config.client_id, config.client_secret, config.region)
+        print("Authenticating...")
         list_tables.authenticate()
+        print("Authenticated.")
     
     # Create default users if not exist
-    if not User.query.filter_by(email='admin@admin.com').first():
-        admin = User(email='admin@admin.com', role='admin')
-        admin.set_password('panama123')
-        db.session.add(admin)
-        db.session.commit()
-        print("Created admin user")
-        
-    if not User.query.filter_by(email='user@user.com').first():
-        user = User(email='user@user.com', role='user')
-        user.set_password('panama123')
-        db.session.add(user)
-        db.session.commit()
-        print("Created default user")
+    print("Checking default users...")
+    if not User.query.first():
+        print("No users found. Setup required.")
+    else:
+        print("Users exist.")
+    print("Startup complete.")
 
 def log_audit(user_id, action, target, details=None, previous_state=None, new_state=None):
     try:
@@ -110,6 +116,65 @@ def admin_required(f):
             abort(403)
         return f(*args, **kwargs)
     return decorated_function
+
+@app.before_request
+def check_setup():
+    # Allow static files and setup route
+    if request.endpoint in ['static', 'setup']:
+        return
+        
+    # Check if any user exists
+    if not User.query.first():
+        return redirect(url_for('setup'))
+
+@app.route('/setup', methods=['GET', 'POST'])
+def setup():
+    if User.query.first():
+        flash('Setup already completed.', 'info')
+        return redirect(url_for('login'))
+        
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        # Optional Config
+        env_name = request.form.get('env_name')
+        region = request.form.get('region')
+        client_id = request.form.get('client_id')
+        client_secret = request.form.get('client_secret')
+        
+        if not email or not password:
+            flash('Email and Password are required.', 'error')
+            return render_template('setup.html')
+            
+        try:
+            # Create Admin User
+            admin = User(email=email, role='admin')
+            admin.set_password(password)
+            db.session.add(admin)
+            
+            # Create Config if provided
+            if client_id and client_secret:
+                config = AppConfig(name=env_name or 'Default', 
+                                   client_id=client_id, 
+                                   client_secret=client_secret, 
+                                   region=region, 
+                                   is_active=True)
+                db.session.add(config)
+                
+                # Set runtime credentials
+                list_tables.set_credentials(client_id, client_secret, region)
+                list_tables.authenticate()
+                
+            db.session.commit()
+            
+            flash('Setup completed successfully! Please login.', 'success')
+            return redirect(url_for('login'))
+            
+        except Exception as e:
+            flash(f'Setup failed: {e}', 'error')
+            
+    return render_template('setup.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -863,4 +928,5 @@ def admin_configure_table(user_id, table_id):
                            table_perms=table_perms_dict)
 
 if __name__ == '__main__':
+    print("Starting Flask server...")
     app.run(debug=True, use_reloader=True)

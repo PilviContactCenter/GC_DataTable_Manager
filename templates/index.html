@@ -6,6 +6,7 @@
 
 {% block content %}
 <div class="overflow-hidden bg-white shadow sm:rounded-md p-4">
+    {% if tables %}
     <table id="tablesList" class="min-w-full divide-y divide-gray-300">
         <thead>
             <tr>
@@ -28,14 +29,27 @@
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <div class="text-center py-5">
+        <h4 class="text-gray-500">No Data Tables Found</h4>
+        {% if user_role == 'admin' %}
+            <p class="text-gray-400">It seems there are no Data Tables in your Genesys Cloud organization, or the API credentials might be incorrect.</p>
+            <p class="text-gray-400">Check your <a href="{{ url_for('admin_config') }}" class="text-indigo-600">Configuration</a>.</p>
+        {% else %}
+            <p class="text-gray-400">You do not have permission to view any tables. Please contact your administrator.</p>
+        {% endif %}
+    </div>
+    {% endif %}
 </div>
 
 <script>
     $(document).ready(function() {
+        {% if tables %}
         $('#tablesList').DataTable({
             "pageLength": 10,
             "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
         });
+        {% endif %}
     });
 
     // Auto-refresh every 60 seconds to check for new tables
