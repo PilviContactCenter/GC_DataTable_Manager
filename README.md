@@ -11,6 +11,8 @@ This is a simple tool I built to help manage Genesys Cloud Data Tables. It makes
 *   **Backup**: Save your tables to a JSON file and restore them later if needed.
 *   **Environments**: Switch between different Genesys organizations (like Dev, Test, Prod) without restarting.
 *   **Audit Logs**: Keeps a history of who changed what.
+*   **Rollback Funcionality**: funcionlity to Undo the changes.
+
 
 ## Business Process Overview
 
